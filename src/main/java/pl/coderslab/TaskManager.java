@@ -27,13 +27,15 @@ public class TaskManager {
                     printOptions(options);
                     break;
                 case "remove":
-                    System.out.println("invoke removeTask();");
+                    tasksList = removeTask(tasksList);
+                    printOptions(options);
                     break;
                 case "list":
-                    printTasks(tasksList);
+                    printTasksList(tasksList);
+                    printOptions(options);
                     break;
-                case "select":
-                    System.out.println("invoke selectTask();");
+                case "quit":
+                    exitMethod();
                     break;
                 default:
                     useCorrectPrtMsg(options);
@@ -56,7 +58,7 @@ public class TaskManager {
         }
     }
 
-    public static void printTasks(String[][] tasksList) {
+    public static void printTasksList(String[][] tasksList) {
         for (int i = 0; i < tasksList.length; i++) {
             System.out.println("Task no: " + (i + 1) + "   --->   " + Arrays.toString(tasksList[i]));
         }
@@ -109,15 +111,34 @@ public class TaskManager {
         return listTasks;
     }
 
-    public static void removeTask() {
+    public static String[][] removeTask(String[][] listTasks) {
+        Scanner scan = new Scanner(System.in);
+        int taskToRmNum;
+        printTasksList(listTasks);
+        System.out.println(ConsoleColors.RED_BRIGHT + "Please, select number of the task you wanna to permanently remove: " + ConsoleColors.RESET);
+        while (!(scan.hasNextInt())) {
+            System.out.println(ConsoleColors.RED_BRIGHT + "Please, select number of the task you wanna to permanently remove: " + ConsoleColors.RESET);
+            scan.nextInt();
+        }
+        taskToRmNum = scan.nextInt();
+        if ((taskToRmNum < 1) || taskToRmNum > listTasks.length) {
+            System.out.println("There is no such a task in database.");
+        } else {
 
+
+            listTasks[taskToRmNum + 1] = listTasks[listTasks.length - 1];
+
+            listTasks = Arrays.copyOf(listTasks, listTasks.length - 1);
+
+            System.out.println("listTasks.length = " + listTasks.length);
+
+            System.out.println(ConsoleColors.PURPLE + "Task removed with full success." + ConsoleColors.RESET);
+
+        }
+        return listTasks;
     }
 
-    public static void listTask() {
-
-    }
-
-    public static void selectTask() {
+    public static void exitMethod() {
 
     }
 
