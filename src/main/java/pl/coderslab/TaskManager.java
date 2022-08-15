@@ -13,7 +13,7 @@ public class TaskManager {
     }
 
     public static void mainRun() {
-        String[][] tasksList = new String[0][0];
+        String[][] tasksList;
         String fileName = "target/tasks.csv";
         tasksList = writeCsvTasksToArray(fileName);
         Scanner scan = new Scanner(System.in);
@@ -36,7 +36,7 @@ public class TaskManager {
                     printOptions(options);
                     break;
                 case "save":
-                    exitMethod(tasksList, fileName);
+                    saveToFile(tasksList, fileName);
                     break;
                 default:
                     useCorrectPrtMsg(options);
@@ -63,9 +63,8 @@ public class TaskManager {
     public static String[][] writeCsvTasksToArray(String fileName) {
         File file = new File(fileName);
         String line;
-        Scanner scan = new Scanner(System.in);
         String[][] tasksList = new String[0][3];
-        String[] tokens = new String[3];
+        String[] tokens;
         try {
             Scanner fileScanner = new Scanner(file);
             while (fileScanner.hasNextLine()) {
@@ -109,42 +108,53 @@ public class TaskManager {
         Scanner scan = new Scanner(System.in);
         int taskToRmNum;
         printTasksList(listTasks);
-        System.out.println(ConsoleColors.RED_BRIGHT + "Please, select number of the task you wanna to permanently remove: " + ConsoleColors.RESET);
+        String msg = ConsoleColors.RED_BRIGHT + "Please, select number of the task you wanna to permanently remove: \n" +
+                ConsoleColors.GREEN + "\nTo cancel please type '0'" + ConsoleColors.RESET;
 
+        System.out.println(msg);
         while (!scan.hasNextInt()) {
+            System.out.println(msg);
             scan.next();
-            System.out.println(ConsoleColors.RED_BRIGHT + "Please, select number of the task you wanna to permanently remove: " + ConsoleColors.RESET);
         }
 
         taskToRmNum = scan.nextInt();
-        if ((taskToRmNum > 1) && (taskToRmNum < (listTasks.length - 1))) {
+        if ((taskToRmNum >= 1) && (taskToRmNum <= (listTasks.length))) {
             listTasks[taskToRmNum - 1] = listTasks[listTasks.length - 1];
             listTasks = Arrays.copyOf(listTasks, listTasks.length - 1);
             System.out.println("listTasks.length = " + listTasks.length);
             System.out.println(ConsoleColors.PURPLE + "Task removed with full success." + ConsoleColors.RESET);
 
+        } else if (taskToRmNum == 0) {
+            System.out.println("You have cancelled the operation.");
+            return listTasks;
+
         } else {
             System.out.println("There is no such a task in database.");
+
         }
         return listTasks;
     }
 
     public static void printTasksList(String[][] tasksList) {
+        String line = "";
         for (int i = 0; i < tasksList.length; i++) {
-            System.out.println("Task no: " + (i + 1) + "   --->   " + Arrays.toString(tasksList[i]));
+            line = Arrays.toString(tasksList[i]);
+            System.out.println("Task no: " + (i + 1) + "   --->   " + line.substring(1, line.length()-1));
         }
         System.out.println(ConsoleColors.BLACK_BACKGROUND +
                 "Currently you have = " + tasksList.length + " tasks to accomplish."
                 + ConsoleColors.RESET);
     }
 
-    public static void exitMethod(String[][] tasksList, String fileName) {
-        try (FileWriter fileWriter = new FileWriter(fileName, true)) {
-            for (String[] tokens : tasksList) {
-                for (String token : tokens) {
-                    System.out.println(tokens);
-                    fileWriter.append(tokens + "\n");
-                }
+    public static void saveToFile(String[][] tasksList, String fileName) {
+        String[] tokens;
+        String line = "";
+        try (FileWriter fileWriter = new FileWriter(fileName, false)) {
+            for (int i = 0; i < tasksList.length; i++) {
+                tokens = tasksList[i];
+                line = Arrays.toString(tokens);
+                line = line.substring(1, line.length() - 1);
+                fileWriter.append(line + "\n");
             }
         } catch (IOException ex) {
             System.out.println("It is not possible to write " + fileName + " file.");
