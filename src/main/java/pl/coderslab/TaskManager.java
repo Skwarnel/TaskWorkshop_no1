@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class TaskManager {
-    //developed on main branch
     public static void main(String[] args) {
         mainRun();
     }
@@ -20,7 +19,7 @@ public class TaskManager {
         Scanner scan = new Scanner(System.in);
         String line = "";
 
-        String[] options = {"add", "remove", "list", "exit"};
+        String[] options = {"add", "remove", "list", "save"};
         printOptions(options);
         while (!(line = scan.nextLine()).equals("quit")) {
             switch (line) {
@@ -36,7 +35,7 @@ public class TaskManager {
                     printTasksList(tasksList);
                     printOptions(options);
                     break;
-                case "exit":
+                case "save":
                     exitMethod(tasksList, fileName);
                     break;
                 default:
@@ -54,17 +53,11 @@ public class TaskManager {
     }
 
     public static void useCorrectPrtMsg(String[] arr) {
-        System.out.println(ConsoleColors.PURPLE_BOLD + "Something is not going well. Please, do not isolate yourself in the big depression, just use correct command and enjoy: ");
+        System.out.println(ConsoleColors.PURPLE_BOLD + "Something is not going well. Please, do not isolate yourself in the big depression, " +
+                "just use correct command and enjoy: ");
         for (int i = 0; i < arr.length; i++) {
             System.out.println(ConsoleColors.CYAN_BRIGHT + " -- " + arr[i] + ConsoleColors.RESET);
         }
-    }
-
-    public static void printTasksList(String[][] tasksList) {
-        for (int i = 0; i < tasksList.length; i++) {
-            System.out.println("Task no: " + (i + 1) + "   --->   " + Arrays.toString(tasksList[i]));
-        }
-        System.out.println("Tasks quantity = " + tasksList.length);
     }
 
     public static String[][] writeCsvTasksToArray(String fileName) {
@@ -117,38 +110,46 @@ public class TaskManager {
         int taskToRmNum;
         printTasksList(listTasks);
         System.out.println(ConsoleColors.RED_BRIGHT + "Please, select number of the task you wanna to permanently remove: " + ConsoleColors.RESET);
-        while (!(scan.hasNextInt())) {
+
+        while (!scan.hasNextInt()) {
+            scan.next();
             System.out.println(ConsoleColors.RED_BRIGHT + "Please, select number of the task you wanna to permanently remove: " + ConsoleColors.RESET);
-            scan.nextInt();
         }
+
         taskToRmNum = scan.nextInt();
-        if ((taskToRmNum < 1) || taskToRmNum > listTasks.length) {
-            System.out.println("There is no such a task in database.");
-        } else {
-
-
-            listTasks[taskToRmNum + 1] = listTasks[listTasks.length - 1];
-
+        if ((taskToRmNum > 1) && (taskToRmNum < (listTasks.length - 1))) {
+            listTasks[taskToRmNum - 1] = listTasks[listTasks.length - 1];
             listTasks = Arrays.copyOf(listTasks, listTasks.length - 1);
-
             System.out.println("listTasks.length = " + listTasks.length);
-
             System.out.println(ConsoleColors.PURPLE + "Task removed with full success." + ConsoleColors.RESET);
 
+        } else {
+            System.out.println("There is no such a task in database.");
         }
         return listTasks;
+    }
+
+    public static void printTasksList(String[][] tasksList) {
+        for (int i = 0; i < tasksList.length; i++) {
+            System.out.println("Task no: " + (i + 1) + "   --->   " + Arrays.toString(tasksList[i]));
+        }
+        System.out.println(ConsoleColors.BLACK_BACKGROUND +
+                "Currently you have = " + tasksList.length + " tasks to accomplish."
+                + ConsoleColors.RESET);
     }
 
     public static void exitMethod(String[][] tasksList, String fileName) {
         try (FileWriter fileWriter = new FileWriter(fileName, true)) {
             for (String[] tokens : tasksList) {
-                System.out.println(tokens);
-                fileWriter.append(tokens + "\n");
+                for (String token : tokens) {
+                    System.out.println(tokens);
+                    fileWriter.append(tokens + "\n");
+                }
             }
         } catch (IOException ex) {
             System.out.println("It is not possible to write " + fileName + " file.");
         }
         System.out.println(ConsoleColors.GREEN_BRIGHT + "See you again! Have a good day :)" + ConsoleColors.RESET +
-                ConsoleColors.RED + "\nDo not forget to QUIT :)");
+                ConsoleColors.RED + "\nDo not forget to QUIT :)" + ConsoleColors.RESET);
     }
 }
