@@ -20,7 +20,7 @@ public class TaskManager {
         Scanner scan = new Scanner(System.in);
         String line = "";
 
-        String[] options = {"add", "remove", "list", "select"};
+        String[] options = {"add", "remove", "list", "exit"};
         printOptions(options);
         while (!(line = scan.nextLine()).equals("quit")) {
             switch (line) {
@@ -36,7 +36,7 @@ public class TaskManager {
                     printTasksList(tasksList);
                     printOptions(options);
                     break;
-                case "quit":
+                case "exit":
                     exitMethod(tasksList, fileName);
                     break;
                 default:
@@ -142,11 +142,13 @@ public class TaskManager {
     public static void exitMethod(String[][] tasksList, String fileName) {
         try (FileWriter fileWriter = new FileWriter(fileName, true)) {
             for (String[] tokens : tasksList) {
+                System.out.println(tokens);
                 fileWriter.append(tokens + "\n");
             }
         } catch (IOException ex) {
             System.out.println("It is not possible to write " + fileName + " file.");
         }
-        System.out.println(ConsoleColors.GREEN_BRIGHT + "See you again! Have a good day :)" + ConsoleColors.RESET);
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "See you again! Have a good day :)" + ConsoleColors.RESET +
+                ConsoleColors.RED + "\nDo not forget to QUIT :)");
     }
 }
