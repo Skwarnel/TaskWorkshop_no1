@@ -2,6 +2,8 @@ package pl.coderslab;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -13,8 +15,8 @@ public class TaskManager {
 
     public static void mainRun() {
         String[][] tasksList = new String[0][0];
-        tasksList = writeCsvTasksToArray();
-
+        String fileName = "target/tasks.csv";
+        tasksList = writeCsvTasksToArray(fileName);
         Scanner scan = new Scanner(System.in);
         String line = "";
 
@@ -35,7 +37,7 @@ public class TaskManager {
                     printOptions(options);
                     break;
                 case "quit":
-                    exitMethod();
+                    exitMethod(tasksList, fileName);
                     break;
                 default:
                     useCorrectPrtMsg(options);
@@ -65,8 +67,7 @@ public class TaskManager {
         System.out.println("Tasks quantity = " + tasksList.length);
     }
 
-    public static String[][] writeCsvTasksToArray() {
-        String fileName = "target/tasks.csv";
+    public static String[][] writeCsvTasksToArray(String fileName) {
         File file = new File(fileName);
         String line;
         Scanner scan = new Scanner(System.in);
@@ -138,8 +139,14 @@ public class TaskManager {
         return listTasks;
     }
 
-    public static void exitMethod() {
-
+    public static void exitMethod(String[][] tasksList, String fileName) {
+        try (FileWriter fileWriter = new FileWriter(fileName, true)) {
+            for (String[] tokens : tasksList) {
+                fileWriter.append(tokens + "\n");
+            }
+        } catch (IOException ex) {
+            System.out.println("It is not possible to write " + fileName + " file.");
+        }
+        System.out.println(ConsoleColors.GREEN_BRIGHT + "See you again! Have a good day :)" + ConsoleColors.RESET);
     }
-
 }
