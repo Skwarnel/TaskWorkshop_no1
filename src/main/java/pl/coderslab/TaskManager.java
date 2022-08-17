@@ -48,7 +48,7 @@ public class TaskManager {
     public static void printOptions(String[] arr) {
         System.out.println(ConsoleColors.BLUE + "Please, select an option: ");
         for (int i = 0; i < arr.length; i++) {
-            System.out.println(ConsoleColors.CYAN_BRIGHT + " -- " + arr[i] + ConsoleColors.RESET);
+            System.out.println(ConsoleColors.CYAN_BRIGHT + " --> " + arr[i] + ConsoleColors.RESET);
         }
     }
 
@@ -63,7 +63,7 @@ public class TaskManager {
     public static String[][] writeCsvTasksToArray(String fileName) {
         File file = new File(fileName);
         String line;
-        String[][] tasksList = new String[0][3];
+        String[][] tasksList = new String[0][0];
         String[] tokens;
         try {
             Scanner fileScanner = new Scanner(file);
