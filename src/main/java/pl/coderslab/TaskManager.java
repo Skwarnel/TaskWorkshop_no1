@@ -17,47 +17,42 @@ public class TaskManager {
         String fileName = "target/tasks.csv";
         tasksList = writeCsvTasksToArray(fileName);
         Scanner scan = new Scanner(System.in);
-        String line = "";
+        String line;
 
-        String[] options = {"add", "remove", "list", "save"};
-        printOptions(options);
+        printOptions();
         while (!(line = scan.nextLine()).equals("quit")) {
             switch (line) {
-                case "add":
+                case "add" -> {
                     tasksList = addTask(tasksList);
-                    printOptions(options);
-                    break;
-                case "remove":
+                    printOptions();
+                }
+                case "remove" -> {
                     tasksList = removeTask(tasksList);
-                    printOptions(options);
-                    break;
-                case "list":
+                    printOptions();
+                }
+                case "list" -> {
                     printTasksList(tasksList);
-                    printOptions(options);
-                    break;
-                case "save":
-                    saveToFile(tasksList, fileName);
-                    break;
-                default:
-                    useCorrectPrtMsg(options);
-                    break;
+                    printOptions();
+                }
+                case "save" -> saveToFile(tasksList, fileName);
+                default -> useCorrectPrtMsg();
             }
         }
     }
 
-    public static void printOptions(String[] arr) {
+    public static void printOptions() {
+        String[] options = {"add", "remove", "list", "save"};
         System.out.println(ConsoleColors.BLUE + "Please, select an option: ");
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println(ConsoleColors.CYAN_BRIGHT + " --> " + arr[i] + ConsoleColors.RESET);
+
+        for (String option: options) {
+            System.out.println(ConsoleColors.CYAN_BRIGHT + " --> " + option + ConsoleColors.RESET);
         }
     }
 
-    public static void useCorrectPrtMsg(String[] arr) {
+    public static void useCorrectPrtMsg() {
         System.out.println(ConsoleColors.PURPLE_BOLD + "Something is not going well. Please, do not isolate yourself in the big depression, " +
                 "just use correct command and enjoy: ");
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println(ConsoleColors.CYAN_BRIGHT + " -- " + arr[i] + ConsoleColors.RESET);
-        }
+        printOptions();
     }
 
     public static String[][] writeCsvTasksToArray(String fileName) {
@@ -136,10 +131,10 @@ public class TaskManager {
     }
 
     public static void printTasksList(String[][] tasksList) {
-        String line = "";
+        String line;
         for (int i = 0; i < tasksList.length; i++) {
             line = Arrays.toString(tasksList[i]);
-            System.out.println("Task no: " + (i + 1) + "   --->   " + line.substring(1, line.length()-1));
+            System.out.println("Task no: " + (i + 1) + "   --->   " + line.substring(1, line.length() - 1));
         }
         System.out.println(ConsoleColors.BLACK_BACKGROUND +
                 "Currently you have = " + tasksList.length + " tasks to accomplish."
@@ -148,13 +143,13 @@ public class TaskManager {
 
     public static void saveToFile(String[][] tasksList, String fileName) {
         String[] tokens;
-        String line = "";
+        String line;
         try (FileWriter fileWriter = new FileWriter(fileName, false)) {
-            for (int i = 0; i < tasksList.length; i++) {
-                tokens = tasksList[i];
+            for (String[] strings : tasksList) {
+                tokens = strings;
                 line = Arrays.toString(tokens);
                 line = line.substring(1, line.length() - 1);
-                fileWriter.append(line + "\n");
+                fileWriter.append(line).append("\n");
             }
         } catch (IOException ex) {
             System.out.println("It is not possible to write " + fileName + " file.");
